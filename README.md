@@ -6,6 +6,8 @@
 
 https://tokitoki1004.github.io/it-passport-review/
 
+更新練習: 2026-07-04 にGitHub DesktopのCommitとPush手順を確認。
+
 ## 使い方
 
 1. `index.html` をブラウザで開く
