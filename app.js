@@ -129,6 +129,16 @@ function saveData() {
   );
 }
 
+function escapeHtml(value) {
+  return value
+    .toString()
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function normalizeText(value) {
   return value
     .toString()
@@ -280,6 +290,58 @@ function renderStats() {
   $("#sessionSummary").textContent = `${attempts}問`;
 }
 
+function importantTermsInText(text) {
+  return state.terms
+    .map((term) => term.name)
+    .filter((name, index, names) => name && text.includes(name) && names.indexOf(name) === index)
+    .sort((a, b) => b.length - a.length);
+}
+
+function renderTextWithCopyTerms(text) {
+  const terms = importantTermsInText(text);
+  if (!terms.length) return escapeHtml(text);
+
+  let html = "";
+  let index = 0;
+  while (index < text.length) {
+    const matched = terms.find((term) => text.startsWith(term, index));
+    if (matched) {
+      const label = escapeHtml(matched);
+      html += `<button class="copy-term" type="button" data-copy="${label}" title="クリックしてコピー">${label}</button>`;
+      index += matched.length;
+    } else {
+      html += escapeHtml(text[index]);
+      index += 1;
+    }
+  }
+  return html;
+}
+
+function renderFeedbackMessage(correct, card) {
+  const message = `${correct ? "正解" : "見直し"}。正解は「${card.answer}」。${card.explanation}`;
+  return `${renderTextWithCopyTerms(message)}<span id="copyStatus" class="copy-status" aria-live="polite"></span>`;
+}
+
+function fallbackCopy(text) {
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+}
+
+async function copyTerm(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+  } else {
+    fallbackCopy(text);
+  }
+}
+
 function resetDeck() {
   state.currentCards = filteredCards();
   state.currentIndex = 0;
@@ -336,7 +398,7 @@ function answerCard(answer) {
   const feedback = $("#feedback");
   feedback.hidden = false;
   feedback.className = `feedback ${correct ? "correct" : "wrong"}`;
-  feedback.textContent = `${correct ? "正解" : "見直し"}。正解は「${card.answer}」。${card.explanation}`;
+  feedback.innerHTML = renderFeedbackMessage(correct, card);
   renderStats();
   renderHistory();
 }
@@ -476,6 +538,18 @@ function bindEvents() {
   });
   $("#answerTrue").addEventListener("click", () => answerCard("○"));
   $("#answerFalse").addEventListener("click", () => answerCard("×"));
+  $("#feedback").addEventListener("click", async (event) => {
+    const button = event.target.closest(".copy-term");
+    if (!button) return;
+    await copyTerm(button.dataset.copy);
+    const status = $("#copyStatus");
+    if (status) {
+      status.textContent = `「${button.dataset.copy}」をコピーしました`;
+      window.setTimeout(() => {
+        status.textContent = "";
+      }, 1600);
+    }
+  });
   $("#nextCardButton").addEventListener("click", nextCard);
   $("#resetSessionButton").addEventListener("click", () => {
     state.sessions = [];

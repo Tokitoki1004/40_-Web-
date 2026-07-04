@@ -274,6 +274,29 @@ button {
   color: var(--bad);
 }
 
+.copy-term {
+  display: inline;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  padding: 1px 5px;
+  background: rgba(255, 255, 255, 0.55);
+  color: inherit;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.copy-term:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.copy-status {
+  display: block;
+  min-height: 1.5em;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .history-section {
   margin-top: 22px;
   padding: 20px;
