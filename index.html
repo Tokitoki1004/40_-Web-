@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ITパスポート復習カード</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">IP</span>
+        <div>
+          <h1>復習カード</h1>
+          <p>スクショ範囲が増えるほど育つ</p>
+        </div>
+      </div>
+
+      <nav class="nav-tabs" aria-label="表示切替">
+        <button class="nav-tab is-active" data-view="study">カード</button>
+        <button class="nav-tab" data-view="library">用語</button>
+        <button class="nav-tab" data-view="add">追加</button>
+      </nav>
+
+      <section class="filter-panel">
+        <label for="pageFilter">PDFページ</label>
+        <select id="pageFilter"></select>
+      </section>
+
+      <section class="stats-panel" aria-label="学習状況">
+        <div>
+          <span id="statTerms">0</span>
+          <small>用語</small>
+        </div>
+        <div>
+          <span id="statCards">0</span>
+          <small>カード</small>
+        </div>
+        <div>
+          <span id="statAccuracy">0%</span>
+          <small>正答率</small>
+        </div>
+      </section>
+
+      <div class="backup-actions">
+        <button id="exportButton" class="ghost-button">JSON書き出し</button>
+        <label class="ghost-button file-button">
+          JSON読込
+          <input id="importInput" type="file" accept="application/json">
+        </label>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section id="studyView" class="view is-active">
+        <div class="page-heading">
+          <div>
+            <p id="studyScope" class="eyebrow">すべてのページ</p>
+            <h2>○×フラッシュカード</h2>
+          </div>
+          <button id="resetSessionButton" class="ghost-button">今回の結果をリセット</button>
+        </div>
+
+        <article class="flash-card" aria-live="polite">
+          <div class="card-meta">
+            <span id="cardPage">p.xx</span>
+            <span id="cardField">分野</span>
+            <span id="cardProgress">0 / 0</span>
+          </div>
+          <p id="cardStatement" class="statement">カードを読み込み中...</p>
+          <div class="answer-row">
+            <button id="answerTrue" class="answer-button">○</button>
+            <button id="answerFalse" class="answer-button">×</button>
+          </div>
+          <div id="feedback" class="feedback" hidden></div>
+          <button id="nextCardButton" class="primary-button">次のカード</button>
+        </article>
+
+        <section class="history-section">
+          <div class="section-title">
+            <h3>今日の履歴</h3>
+            <span id="sessionSummary">0問</span>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </section>
+      </section>
+
+      <section id="libraryView" class="view">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">用語ライブラリ</p>
+            <h2>スクショで増えた用語</h2>
+          </div>
+          <input id="searchInput" class="search-input" type="search" placeholder="用語・説明で検索">
+        </div>
+        <div id="termGrid" class="term-grid"></div>
+      </section>
+
+      <section id="addView" class="view">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">次のスクショ用</p>
+            <h2>用語とカードを追加</h2>
+          </div>
+        </div>
+
+        <form id="addForm" class="add-form">
+          <div class="form-row">
+            <label>
+              PDFページ
+              <input name="page" required placeholder="p.190">
+            </label>
+            <label>
+              範囲名
+              <input name="scope" required placeholder="プロジェクトマネジメント">
+            </label>
+          </div>
+          <label>
+            用語データ
+            <textarea name="terms" rows="10" placeholder="用語 | 分野 | ひとことで | 試験で狙われるところ&#10;例: リスク | マネジメント | 目標達成を妨げる不確実な事象 | 発生確率と影響度で管理する"></textarea>
+          </label>
+          <p class="help-text">1行につき1用語。追加すると、その場で○×カードも作られます。</p>
+          <button class="primary-button" type="submit">追加する</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="seed-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

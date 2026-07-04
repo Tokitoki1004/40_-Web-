@@ -1,0 +1,433 @@
+const STORAGE_KEY = "itpassport-review-webapp:v3";
+
+const FALSE_QUIZ_BY_NAME = {
+  BPR: "BPRは、既存の製品やソフトウェアを分解・解析して構造を明らかにする手法。",
+  CMMI: "CMMIは、組織の情報セキュリティを管理・改善するための仕組み。",
+  DevOps: "DevOpsは、開発工程を要件定義からテストまで順番に進める開発モデル。",
+  ISMS: "ISMSは、システム開発組織のプロセス成熟度を5段階で評価するモデル。",
+  "ISO 14001": "ISO 14001は、個人情報保護マネジメントシステムに関する日本産業規格。",
+  "JIS Q 15001": "JIS Q 15001は、環境マネジメントシステムに関する国際規格。",
+  RAD: "RADは、要件定義、設計、プログラミング、テストをこの順番で進める開発モデル。",
+  SLA: "SLAは、ソフトウェアの企画から保守までのライフサイクル全体のプロセス。",
+  SLCP: "SLCPは、サービス提供者と利用者の間で決めるサービス品質の約束。",
+  UML: "UMLは、利用者とシステムのやり取りだけを文章で記述するシナリオ。",
+  アジャイル: "アジャイルは、最初に全工程を固め、工程ごとに完了確認して次へ進む開発モデル。",
+  ウォーターフォールモデル: "ウォーターフォールモデルは、短い期間で開発と確認を繰り返し、変更に柔軟に対応する手法。",
+  オブジェクト指向設計: "オブジェクト指向設計は、業務で扱うデータ同士の関係だけに着目して設計する考え方。",
+  クラス: "クラスは、実際に動作している個々のオブジェクトそのもの。",
+  コンカレントエンジニアリング: "コンカレントエンジニアリングは、業務内容は変えず仕事の流れを根本的に見直す手法。",
+  ステークホルダ: "ステークホルダは、プロジェクトの結果として作られる成果物のこと。",
+  スパイラルモデル: "スパイラルモデルは、試作品を利用者に見せながら要求を明確にする開発モデル。",
+  ソフトウェア開発管理技術: "ソフトウェア開発管理技術は、情報セキュリティだけを管理するための仕組み。",
+  データ中心アプローチ: "データ中心アプローチは、業務の処理手順や作業の流れに着目して分析する考え方。",
+  ハルシネーション: "ハルシネーションは、生成AIが常に正しい根拠付きの回答だけを返す性質。",
+  プロジェクト: "プロジェクトは、期限を決めずに定常的に繰り返す日常業務。",
+  プロジェクトの制約条件: "プロジェクトの制約条件は、どのプロジェクトでも必ず品質だけを最優先する決まり。",
+  プロジェクトマネージャ: "プロジェクトマネージャは、発注者に提案を依頼する文書。",
+  プロジェクトマネジメント: "プロジェクトマネジメントは、システムに必要な機能や条件を書き出す作業だけを指す。",
+  プロジェクトマネジメント計画書: "プロジェクトマネジメント計画書は、発注者がベンダに提案を依頼する文書。",
+  プロジェクト憲章: "プロジェクト憲章は、プロジェクトの日々の詳細な作業実績を記録する日報。",
+  プロセス中心アプローチ: "プロセス中心アプローチは、業務で扱うデータ同士の関係に着目して分析する考え方。",
+  プロトタイピングモデル: "プロトタイピングモデルは、完成まで利用者に確認せず、工程を順番に進める開発モデル。",
+  ホワイトボックステスト: "ホワイトボックステストは、利用者の操作だけを見て内部構造を考慮しないテスト。",
+  メソッド: "メソッドは、オブジェクトが持つ名前や年齢などのデータ項目そのもの。",
+  ユースケース: "ユースケースは、プログラムの内部構造や処理の流れを確認するテスト。",
+  リバースエンジニアリング: "リバースエンジニアリングは、仕事の流れや方法を根本的に見直して業務を改革すること。",
+  共通フレーム: "共通フレームは、開発組織のプロセス成熟度を5段階で定義したモデル。",
+  継承: "継承は、データの重複や矛盾を減らすために表を整理すること。",
+  公開鍵暗号方式: "公開鍵暗号方式は、暗号化にも復号にも必ず同じ1つの鍵だけを使う方式。",
+  成果物: "成果物は、プロジェクトに関係する、または影響を受ける個人や組織。",
+  正規化: "正規化は、利益がちょうど0になる売上高を求めること。",
+  損益分岐点: "損益分岐点は、データの重複や矛盾を減らすために表を整理すること。",
+  提案依頼書: "提案依頼書は、プロジェクトをどう運営・管理するかをまとめた計画書。",
+  要件定義書: "要件定義書は、プロジェクトの目的や責任者を明確にして開始を正式に認める文書。",
+  PMBOK: "PMBOKは、システム開発組織のプロセス成熟度を5段階で評価するモデル。",
+  プロジェクトマネジメントオフィス: "プロジェクトマネジメントオフィスは、個々のプロジェクトの成果物そのものを指す。",
+  知識エリア: "知識エリアは、プロジェクトメンバー同士の1対1の情報伝達経路数。",
+  プロジェクトスコープマネジメント: "プロジェクトスコープマネジメントは、プロジェクトの費用だけを見積もり管理すること。",
+  プロジェクトコストマネジメント: "プロジェクトコストマネジメントは、プロジェクトで作るものと作業範囲を明確にすること。",
+  プロジェクトタイムマネジメント: "プロジェクトタイムマネジメントは、プロジェクトの不確実な事象への対応策を管理すること。",
+  プロジェクトリスクマネジメント: "プロジェクトリスクマネジメントは、プロジェクトを期限内に完了させるための日程管理だけを指す。",
+  立上げプロセス群: "立上げプロセス群は、プロジェクト計画に含まれる作業を実際に実行する段階。",
+  計画プロセス群: "計画プロセス群は、プロジェクトの進捗やコスト差異を監視して是正する段階。",
+  実行プロセス群: "実行プロセス群は、プロジェクトで実行する作業を洗い出して詳細化する段階。",
+  "監視・コントロールプロセス群": "監視・コントロールプロセス群は、プロジェクトの開始と資源投入を正式に承認する段階。",
+  終結プロセス群: "終結プロセス群は、プロジェクトの開始を正式に認める段階。",
+  スコープ: "スコープは、プロジェクトの進捗遅延時の対応策だけを決めるもの。",
+  成果物スコープ: "成果物スコープは、成果物を作るために必要な作業手順の範囲。",
+  プロジェクトスコープ: "プロジェクトスコープは、プロジェクトで作成する成果物そのものの範囲。",
+  WBS: "WBSは、作業の予定や進捗を横棒で表す図。",
+  マイルストーン: "マイルストーンは、作業の順序関係と所要日数を矢印で表す図。",
+  アローダイアグラム: "アローダイアグラムは、作業の予定や進捗を横棒で表す図。",
+  クリティカルパス: "クリティカルパスは、短縮してもプロジェクト全体の完了日に影響しない作業経路。",
+  ガントチャート: "ガントチャートは、プロジェクトチームが実行する作業を階層的に分解した図表。",
+  進捗管理: "進捗管理では、管理者の感覚だけで進捗遅れを判断すればよい。",
+  リスク対応: "リスク対応は、リスクが発生してから必ず何もせず受け入れることだけを指す。",
+  リスク回避: "リスク回避は、リスクを外部委託や保険で第三者へ移すこと。",
+  リスク転嫁: "リスク転嫁は、リスクの原因になる計画や方法を変更してリスク自体を避けること。",
+  リスク軽減: "リスク軽減は、リスクを認識したうえで特別な対策を取らず受け入れること。",
+  リスク受容: "リスク受容は、複雑な作業を簡単な構成に変えてリスクの影響を小さくすること。",
+  コミュニケーション経路: "コミュニケーション経路は、メンバーが増えても常に人数と同じ数だけ増える。",
+  要員計画: "要員計画では、メンバーの役割や責任をあいまいにして柔軟性を高めることが最も重要。",
+  工数: "工数は、作業量ではなくプロジェクトの利益が0になる売上高。",
+  生産性: "生産性は、作業順序や工程に関係なく担当者名のアルファベット順で決まる。",
+};
+
+const state = {
+  terms: [],
+  cards: [],
+  sessions: [],
+  currentCards: [],
+  currentIndex: 0,
+  answered: false,
+  filterPage: "all",
+  view: "study",
+};
+
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+
+function normalizeId(value) {
+  return value
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-ぁ-んァ-ヶ一-龠]/g, "");
+}
+
+function loadData() {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      state.terms = parsed.terms || [];
+      state.cards = parsed.cards || [];
+      state.sessions = parsed.sessions || [];
+      return;
+    } catch (error) {
+      console.warn("保存データを読み込めませんでした。初期データを使います。", error);
+    }
+  }
+  state.terms = [...window.ITPASSPORT_SEED.terms];
+  state.cards = buildSeedCards(state.terms);
+  state.sessions = [];
+  saveData();
+}
+
+function saveData() {
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify({
+      terms: state.terms,
+      cards: state.cards,
+      sessions: state.sessions,
+      updatedAt: new Date().toISOString(),
+    })
+  );
+}
+
+function buildSeedCards(terms) {
+  return terms.flatMap((term) => {
+    const falseStatement = FALSE_QUIZ_BY_NAME[term.name] || buildFallbackFalseStatement(term, terms);
+    const base = {
+      termId: term.id,
+      page: term.page,
+      field: term.field,
+      sourceProblem: term.problem,
+      status: "#要復習",
+      difficulty: 3,
+      correct: 0,
+      wrong: 0,
+    };
+    return [
+      {
+        ...base,
+        id: `card-${term.id}-true`,
+        statement: `${term.name}は、${term.summary}`,
+        answer: "○",
+        explanation: `${term.name}は「${term.summary}」。${term.examPoint}`,
+      },
+      {
+        ...base,
+        id: `card-${term.id}-false`,
+        statement: falseStatement,
+        answer: "×",
+        explanation: `正しくは、${term.name}は「${term.summary}」。${term.examPoint}`,
+      },
+    ];
+  });
+}
+
+function buildFallbackFalseStatement(term, terms) {
+  const confuser = terms.find((item) => item.page === term.page && item.id !== term.id) || terms.find((item) => item.id !== term.id);
+  if (!confuser) return `${term.name}は、試験では問われない用語である。`;
+  return `${term.name}は、${confuser.summary}`;
+}
+
+function pages() {
+  return [...new Set(state.terms.map((term) => term.page))]
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b, "ja"));
+}
+
+function pageFromUrl() {
+  const page = new URLSearchParams(window.location.search).get("page");
+  return page ? `p.${page.replace(/^p\.?/i, "")}` : "all";
+}
+
+function updateUrlPage(page) {
+  const url = new URL(window.location.href);
+  if (page === "all") {
+    url.searchParams.delete("page");
+  } else {
+    url.searchParams.set("page", page.replace(/^p\./, ""));
+  }
+  window.history.replaceState(null, "", url);
+}
+
+function filteredCards() {
+  return state.cards.filter((card) => state.filterPage === "all" || card.page === state.filterPage);
+}
+
+function filteredTerms() {
+  const query = $("#searchInput")?.value.trim().toLowerCase() || "";
+  return state.terms.filter((term) => {
+    const pageOk = state.filterPage === "all" || term.page === state.filterPage;
+    const queryOk = !query || [term.name, term.summary, term.examPoint, term.hobby].join(" ").toLowerCase().includes(query);
+    return pageOk && queryOk;
+  });
+}
+
+function renderPageOptions() {
+  const select = $("#pageFilter");
+  const current = state.filterPage || select.value;
+  select.innerHTML = `<option value="all">すべて</option>${pages().map((page) => `<option value="${page}">${page}</option>`).join("")}`;
+  select.value = pages().includes(current) ? current : "all";
+  state.filterPage = select.value;
+}
+
+function renderStats() {
+  const cards = filteredCards();
+  const attempts = state.sessions.length;
+  const correct = state.sessions.filter((item) => item.correct).length;
+  $("#statTerms").textContent = filteredTerms().length;
+  $("#statCards").textContent = cards.length;
+  $("#statAccuracy").textContent = attempts ? `${Math.round((correct / attempts) * 100)}%` : "0%";
+  $("#sessionSummary").textContent = `${attempts}問`;
+}
+
+function resetDeck() {
+  state.currentCards = filteredCards();
+  state.currentIndex = 0;
+  state.answered = false;
+}
+
+function currentCard() {
+  if (!state.currentCards.length) return null;
+  return state.currentCards[state.currentIndex % state.currentCards.length];
+}
+
+function renderStudy() {
+  const card = currentCard();
+  $("#studyScope").textContent = state.filterPage === "all" ? "すべてのページ" : state.filterPage;
+
+  if (!card) {
+    $("#cardPage").textContent = "-";
+    $("#cardField").textContent = "-";
+    $("#cardProgress").textContent = "0 / 0";
+    $("#cardStatement").textContent = "このページにはカードがありません。追加タブからカードを増やしてください。";
+    $("#feedback").hidden = true;
+    return;
+  }
+
+  $("#cardPage").textContent = card.page;
+  $("#cardField").textContent = card.field || "未分類";
+  $("#cardProgress").textContent = `${(state.currentIndex % state.currentCards.length) + 1} / ${state.currentCards.length}`;
+  $("#cardStatement").textContent = card.statement;
+  $("#feedback").hidden = true;
+  $("#feedback").className = "feedback";
+}
+
+function answerCard(answer) {
+  if (state.answered) return;
+  const card = currentCard();
+  if (!card) return;
+  const correct = answer === card.answer;
+  card[correct ? "correct" : "wrong"] += 1;
+  if (!correct) {
+    card.difficulty = Math.min(5, (card.difficulty || 3) + 1);
+  }
+  state.sessions.unshift({
+    cardId: card.id,
+    term: termName(card.termId),
+    page: card.page,
+    answer,
+    correct,
+    at: new Date().toISOString(),
+  });
+  state.sessions = state.sessions.slice(0, 50);
+  state.answered = true;
+  saveData();
+
+  const feedback = $("#feedback");
+  feedback.hidden = false;
+  feedback.className = `feedback ${correct ? "correct" : "wrong"}`;
+  feedback.textContent = `${correct ? "正解" : "見直し"}。正解は「${card.answer}」。${card.explanation}`;
+  renderStats();
+  renderHistory();
+}
+
+function nextCard() {
+  if (!state.currentCards.length) return;
+  state.currentIndex = (state.currentIndex + 1) % state.currentCards.length;
+  state.answered = false;
+  renderStudy();
+}
+
+function termName(termId) {
+  return state.terms.find((term) => term.id === termId)?.name || termId;
+}
+
+function renderHistory() {
+  const list = $("#historyList");
+  if (!state.sessions.length) {
+    list.innerHTML = `<p class="help-text">まだ解答履歴がありません。</p>`;
+    return;
+  }
+  list.innerHTML = state.sessions.slice(0, 8).map((item) => `
+    <div class="history-item">
+      <strong>${item.correct ? "正解" : "見直し"}</strong>
+      <span>${item.page}</span>
+      <span>${item.term}</span>
+      <span>回答: ${item.answer}</span>
+    </div>
+  `).join("");
+}
+
+function renderTerms() {
+  const terms = filteredTerms();
+  $("#termGrid").innerHTML = terms.map((term) => `
+    <article class="term-card">
+      <div class="tag-row">
+        <span class="tag">${term.page}</span>
+        <span class="tag">${term.field || "未分類"}</span>
+        ${term.problem ? `<span class="tag">${term.problem}</span>` : ""}
+      </div>
+      <h3>${term.name}</h3>
+      <p>${term.summary}</p>
+      <p>${term.examPoint}</p>
+    </article>
+  `).join("") || `<p class="help-text">該当する用語がありません。</p>`;
+}
+
+function switchView(view) {
+  state.view = view;
+  $$(".nav-tab").forEach((button) => button.classList.toggle("is-active", button.dataset.view === view));
+  $$(".view").forEach((section) => section.classList.toggle("is-active", section.id === `${view}View`));
+}
+
+function addTermsFromForm(event) {
+  event.preventDefault();
+  const form = new FormData(event.currentTarget);
+  const page = form.get("page").toString().trim();
+  const scope = form.get("scope").toString().trim();
+  const lines = form.get("terms").toString().split("\n").map((line) => line.trim()).filter(Boolean);
+  const newTerms = [];
+
+  for (const line of lines) {
+    const [name, field = "マネジメント", summary = "", examPoint = "試験で説明文との対応を確認する。"] = line.split("|").map((part) => part.trim());
+    if (!name || !summary) continue;
+    const id = normalizeId(`${page}-${name}`);
+    if (state.terms.some((term) => term.id === id)) continue;
+    newTerms.push({
+      id,
+      name,
+      field,
+      page,
+      problem: "",
+      summary,
+      hobby: `${scope}の中で、${name}を見分けるための目印として覚える。`,
+      examPoint,
+    });
+  }
+
+  if (!newTerms.length) return;
+  state.terms.push(...newTerms);
+  state.cards.push(...buildSeedCards(newTerms));
+  saveData();
+  event.currentTarget.reset();
+  renderAll();
+  switchView("study");
+}
+
+function exportJson() {
+  const blob = new Blob([localStorage.getItem(STORAGE_KEY)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `itpassport-review-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importJson(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      state.terms = parsed.terms || [];
+      state.cards = parsed.cards || [];
+      state.sessions = parsed.sessions || [];
+      saveData();
+      renderAll();
+    } catch (error) {
+      alert("JSONを読み込めませんでした。");
+    }
+  };
+  reader.readAsText(file);
+}
+
+function renderAll() {
+  renderPageOptions();
+  resetDeck();
+  renderStats();
+  renderStudy();
+  renderHistory();
+  renderTerms();
+}
+
+function bindEvents() {
+  $$(".nav-tab").forEach((button) => {
+    button.addEventListener("click", () => switchView(button.dataset.view));
+  });
+  $("#pageFilter").addEventListener("change", (event) => {
+    state.filterPage = event.target.value;
+    updateUrlPage(state.filterPage);
+    resetDeck();
+    renderStats();
+    renderStudy();
+    renderTerms();
+  });
+  $("#answerTrue").addEventListener("click", () => answerCard("○"));
+  $("#answerFalse").addEventListener("click", () => answerCard("×"));
+  $("#nextCardButton").addEventListener("click", nextCard);
+  $("#resetSessionButton").addEventListener("click", () => {
+    state.sessions = [];
+    saveData();
+    renderStats();
+    renderHistory();
+  });
+  $("#searchInput").addEventListener("input", renderTerms);
+  $("#addForm").addEventListener("submit", addTermsFromForm);
+  $("#exportButton").addEventListener("click", exportJson);
+  $("#importInput").addEventListener("change", (event) => {
+    const file = event.target.files?.[0];
+    if (file) importJson(file);
+  });
+}
+
+loadData();
+state.filterPage = pageFromUrl();
+bindEvents();
+renderAll();
