@@ -4,7 +4,7 @@
 
 公開版:
 
-https://tokitoki1004.github.io/it-passport-review/
+https://tokitoki1004.github.io/40_-Web-/
 
 更新練習: 2026-07-04 にGitHub DesktopのCommitとPush手順を確認。
 
@@ -53,7 +53,7 @@ node tools-build-seed-data.mjs
 
 ## GitHub Pagesへの反映
 
-公開版を更新するには、GitHubの `it-passport-review` リポジトリへ次のファイルを反映します。
+公開版を更新するには、GitHubの `40_-Web-` リポジトリへ次のファイルを反映します。
 
 - `index.html`
 - `style.css`

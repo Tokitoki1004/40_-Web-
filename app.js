@@ -104,6 +104,7 @@ function loadData() {
       state.terms = parsed.terms || [];
       state.cards = parsed.cards || [];
       state.sessions = parsed.sessions || [];
+      enrichCardExplanations();
       return;
     } catch (error) {
       console.warn("保存データを読み込めませんでした。初期データを使います。", error);
@@ -112,6 +113,7 @@ function loadData() {
   state.terms = [...window.ITPASSPORT_SEED.terms];
   state.cards = buildSeedCards(state.terms);
   state.sessions = [];
+  enrichCardExplanations();
   saveData();
 }
 
@@ -125,6 +127,67 @@ function saveData() {
       updatedAt: new Date().toISOString(),
     })
   );
+}
+
+function normalizeText(value) {
+  return value
+    .toString()
+    .replace(/[「」。、，．\s]/g, "")
+    .replace(/こと$/, "");
+}
+
+function extractStatementDefinition(statement) {
+  return statement.toString().split("は、").slice(1).join("は、").trim();
+}
+
+function similarity(a, b) {
+  const left = normalizeText(a);
+  const right = normalizeText(b);
+  if (!left || !right) return 0;
+  if (left.includes(right) || right.includes(left)) return 1;
+
+  const leftChars = new Set([...left]);
+  const rightChars = new Set([...right]);
+  const overlap = [...leftChars].filter((char) => rightChars.has(char)).length;
+  return overlap / Math.max(leftChars.size, rightChars.size);
+}
+
+function referencedTermForStatement(statement, currentTermId) {
+  const definition = extractStatementDefinition(statement);
+  if (!definition) return null;
+
+  const candidates = state.terms
+    .filter((term) => term.id !== currentTermId)
+    .map((term) => ({
+      term,
+      score: Math.max(
+        similarity(definition, term.summary),
+        similarity(definition, term.examPoint)
+      ),
+    }))
+    .sort((a, b) => b.score - a.score);
+
+  return candidates[0]?.score >= 0.51 ? candidates[0].term : null;
+}
+
+function explanationForCard(card) {
+  const term = state.terms.find((item) => item.id === card.termId);
+  if (!term) return card.explanation || "";
+
+  if (card.answer === "×") {
+    const referencedTerm = referencedTermForStatement(card.statement, term.id);
+    const referenceText = referencedTerm ? `この説明は「${referencedTerm.name}」のこと。` : "";
+    return `${referenceText}正しくは、${term.name}は「${term.summary}」。${term.examPoint}`;
+  }
+
+  return `${term.name}は「${term.summary}」。${term.examPoint}`;
+}
+
+function enrichCardExplanations() {
+  state.cards = state.cards.map((card) => ({
+    ...card,
+    explanation: explanationForCard(card),
+  }));
 }
 
 function buildSeedCards(terms) {
@@ -153,7 +216,7 @@ function buildSeedCards(terms) {
         id: `card-${term.id}-false`,
         statement: falseStatement,
         answer: "×",
-        explanation: `正しくは、${term.name}は「${term.summary}」。${term.examPoint}`,
+        explanation: "",
       },
     ];
   });
@@ -355,6 +418,7 @@ function addTermsFromForm(event) {
   if (!newTerms.length) return;
   state.terms.push(...newTerms);
   state.cards.push(...buildSeedCards(newTerms));
+  enrichCardExplanations();
   saveData();
   event.currentTarget.reset();
   renderAll();
@@ -379,6 +443,7 @@ function importJson(file) {
       state.terms = parsed.terms || [];
       state.cards = parsed.cards || [];
       state.sessions = parsed.sessions || [];
+      enrichCardExplanations();
       saveData();
       renderAll();
     } catch (error) {
