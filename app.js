@@ -4,11 +4,14 @@ const FALSE_QUIZ_BY_NAME = {
   BPR: "BPRは、既存の製品やソフトウェアを分解・解析して構造を明らかにする手法。",
   CMMI: "CMMIは、組織の情報セキュリティを管理・改善するための仕組み。",
   DevOps: "DevOpsは、開発工程を要件定義からテストまで順番に進める開発モデル。",
+  ITIL: "ITILは、ITサービスの運用管理を効率的に行うためのソフトウェアパッケージ。",
+  ITサービス: "ITサービスは、ITサービスを運用管理するための方法を体系的にまとめたベストプラクティス集。",
+  ITサービスマネジメント: "ITサービスマネジメントは、組織内の過去の経験から得られた知識を整理・共有する活動。",
   ISMS: "ISMSは、システム開発組織のプロセス成熟度を5段階で評価するモデル。",
   "ISO 14001": "ISO 14001は、個人情報保護マネジメントシステムに関する日本産業規格。",
   "JIS Q 15001": "JIS Q 15001は、環境マネジメントシステムに関する国際規格。",
   RAD: "RADは、要件定義、設計、プログラミング、テストをこの順番で進める開発モデル。",
-  SLA: "SLAは、ソフトウェアの企画から保守までのライフサイクル全体のプロセス。",
+  SLA: "SLAは、ITサービスを運用管理するための方法を体系的にまとめたベストプラクティス集。",
   SLCP: "SLCPは、サービス提供者と利用者の間で決めるサービス品質の約束。",
   UML: "UMLは、利用者とシステムのやり取りだけを文章で記述するシナリオ。",
   アジャイル: "アジャイルは、最初に全工程を固め、工程ごとに完了確認して次へ進む開発モデル。",
@@ -54,6 +57,7 @@ const FALSE_QUIZ_BY_NAME = {
   "監視・コントロールプロセス群": "監視・コントロールプロセス群は、プロジェクトの開始と資源投入を正式に承認する段階。",
   終結プロセス群: "終結プロセス群は、プロジェクトの開始を正式に認める段階。",
   スコープ: "スコープは、プロジェクトの進捗遅延時の対応策だけを決めるもの。",
+  サービスレベル: "サービスレベルは、サービスやIT資産の構成品目を管理するためのデータベース。",
   成果物スコープ: "成果物スコープは、成果物を作るために必要な作業手順の範囲。",
   プロジェクトスコープ: "プロジェクトスコープは、プロジェクトで作成する成果物そのものの範囲。",
   WBS: "WBSは、作業の予定や進捗を横棒で表す図。",
@@ -104,7 +108,11 @@ function loadData() {
       state.terms = parsed.terms || [];
       state.cards = parsed.cards || [];
       state.sessions = parsed.sessions || [];
-      enrichCardExplanations();
+      if (mergeSeedData()) {
+        saveData();
+      } else {
+        enrichCardExplanations();
+      }
       return;
     } catch (error) {
       console.warn("保存データを読み込めませんでした。初期データを使います。", error);
@@ -127,6 +135,28 @@ function saveData() {
       updatedAt: new Date().toISOString(),
     })
   );
+}
+
+function mergeSeedData() {
+  const seedTerms = window.ITPASSPORT_SEED?.terms || [];
+  const existingTermIds = new Set(state.terms.map((term) => term.id));
+  const newTerms = seedTerms.filter((term) => !existingTermIds.has(term.id));
+
+  if (newTerms.length) {
+    state.terms.push(...newTerms);
+  }
+
+  const seedTermIds = new Set(seedTerms.map((term) => term.id));
+  const existingCardIds = new Set(state.cards.map((card) => card.id));
+  const generatedCards = buildSeedCards(state.terms.filter((term) => seedTermIds.has(term.id)));
+  const newCards = generatedCards.filter((card) => !existingCardIds.has(card.id));
+
+  if (newCards.length) {
+    state.cards.push(...newCards);
+  }
+
+  enrichCardExplanations();
+  return newTerms.length > 0 || newCards.length > 0;
 }
 
 function escapeHtml(value) {
