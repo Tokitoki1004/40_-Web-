@@ -41,12 +41,13 @@ for (const file of files) {
   const text = await fs.readFile(path.join(termsDir, file), "utf8");
   const name = text.match(/^# (.+)$/m)?.[1] || file.replace(/\.md$/, "");
   const related = section(text, "関連");
-  const page = (related.match(/PDF p\.[0-9x]+/) || ["PDF p.xx"])[0].replace("PDF ", "");
+  const pages = related.match(/p\.[0-9x]+/g) || ["p.xx"];
+  const page = [...new Set(pages)].join(", ");
   const review = section(text, "復習ポイント");
   const hobby = review.split("\n").find((line) => line.includes("趣味でたとえると:"))?.replace(/^- 趣味でたとえると:\s*/, "") || firstText(section(text, "趣味でたとえると"));
   const examPoint = review.split("\n").find((line) => line.includes("試験で狙われるところ:"))?.replace(/^- 試験で狙われるところ:\s*/, "") || firstText(section(text, "試験で問われやすい点"));
   terms.push({
-    id: idFor(page, name),
+    id: idFor(pages[0], name),
     name,
     field: fieldFromTags(text),
     page,

@@ -61,6 +61,12 @@ const FALSE_QUIZ_BY_NAME = {
   スコープ: "スコープは、プロジェクトの進捗遅延時の対応策だけを決めるもの。",
   サービスレベル: "サービスレベルは、サービスやIT資産の構成品目を管理するためのデータベース。",
   サービスサポート: "サービスサポートは、サービス提供者と顧客の間で合意したサービス内容や品質の約束。",
+  サービスデスク: "サービスデスクは、すべて自動応答する仕組みでなければならない。",
+  ヘルプデスク: "ヘルプデスクは、ITサービスの構成品目や資産情報を管理するデータベース。",
+  チャットボット: "チャットボットは、よくある質問と回答を一覧にして掲載した静的な文書。",
+  FAQ: "FAQは、自動応答技術で利用者とリアルタイムに会話するツール。",
+  エスカレーション: "エスカレーションは、人がPCで行う定型作業をソフトウェアロボットで自動化する仕組み。",
+  RPA: "RPAは、サービスデスクでリアルタイムに会話形式の問い合わせ対応を行うツール。",
   成果物スコープ: "成果物スコープは、成果物を作るために必要な作業手順の範囲。",
   プロジェクトスコープ: "プロジェクトスコープは、プロジェクトで作成する成果物そのものの範囲。",
   WBS: "WBSは、作業の予定や進捗を横棒で表す図。",
@@ -147,8 +153,16 @@ function saveData() {
 
 function mergeSeedData() {
   const seedTerms = window.ITPASSPORT_SEED?.terms || [];
-  const existingTermIds = new Set(state.terms.map((term) => term.id));
+  const existingTermsById = new Map(state.terms.map((term) => [term.id, term]));
+  const existingTermIds = new Set(existingTermsById.keys());
   const newTerms = seedTerms.filter((term) => !existingTermIds.has(term.id));
+
+  seedTerms.forEach((seedTerm) => {
+    const existingTerm = existingTermsById.get(seedTerm.id);
+    if (existingTerm) {
+      Object.assign(existingTerm, seedTerm);
+    }
+  });
 
   if (newTerms.length) {
     state.terms.push(...newTerms);
@@ -158,6 +172,23 @@ function mergeSeedData() {
   const existingCardIds = new Set(state.cards.map((card) => card.id));
   const generatedCards = buildSeedCards(state.terms.filter((term) => seedTermIds.has(term.id)));
   const newCards = generatedCards.filter((card) => !existingCardIds.has(card.id));
+  const generatedCardsById = new Map(generatedCards.map((card) => [card.id, card]));
+
+  state.cards = state.cards.map((card) => {
+    const generatedCard = generatedCardsById.get(card.id);
+    if (!generatedCard) return card;
+    return {
+      ...card,
+      termId: generatedCard.termId,
+      page: generatedCard.page,
+      field: generatedCard.field,
+      sourceProblem: generatedCard.sourceProblem,
+      status: generatedCard.status,
+      difficulty: generatedCard.difficulty,
+      statement: generatedCard.statement,
+      answer: generatedCard.answer,
+    };
+  });
 
   if (newCards.length) {
     state.cards.push(...newCards);
@@ -276,8 +307,20 @@ function buildFallbackFalseStatement(term, terms) {
   return `${term.name}は、${confuser.summary}`;
 }
 
+function termPages(item) {
+  return item.page
+    .toString()
+    .split(",")
+    .map((page) => page.trim())
+    .filter(Boolean);
+}
+
+function matchesPage(item) {
+  return state.filterPage === "all" || termPages(item).includes(state.filterPage);
+}
+
 function pages() {
-  return [...new Set(state.terms.map((term) => term.page))]
+  return [...new Set(state.terms.flatMap((term) => termPages(term)))]
     .filter(Boolean)
     .sort((a, b) => a.localeCompare(b, "ja"));
 }
@@ -298,13 +341,13 @@ function updateUrlPage(page) {
 }
 
 function filteredCards() {
-  return state.cards.filter((card) => state.filterPage === "all" || card.page === state.filterPage);
+  return state.cards.filter((card) => matchesPage(card));
 }
 
 function filteredTerms() {
   const query = $("#searchInput")?.value.trim().toLowerCase() || "";
   return state.terms.filter((term) => {
-    const pageOk = state.filterPage === "all" || term.page === state.filterPage;
+    const pageOk = matchesPage(term);
     const queryOk = !query || [term.name, term.summary, term.examPoint, term.hobby].join(" ").toLowerCase().includes(query);
     return pageOk && queryOk;
   });
