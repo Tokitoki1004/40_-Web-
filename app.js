@@ -117,6 +117,20 @@ const FALSE_QUIZ_BY_NAME = {
   符号化: "符号化は、標本化した値を決められた段階に近似する処理。",
   サンプリング周期: "サンプリング周期は、長いほど元の波形に近い波形を復元しやすい。",
   サンプリングレート: "サンプリングレートが高いほど、サンプリング周期は長くなる。",
+  データ構造: "データ構造は、プログラムの処理手順を図記号で表したもの。",
+  木構造: "木構造は、格納した順序とは逆の順序でデータを取り出す構造。",
+  キュー: "キューは、後から入れたデータを先に取り出すデータ構造。",
+  スタック: "スタックは、先に入れたデータを先に取り出すデータ構造。",
+  リスト: "リストは、必ず階層の上位から下位へ節点をたどるデータ構造。",
+  アルゴリズム: "アルゴリズムは、コンピュータが直接実行できる機械語へ変換するソフトウェア。",
+  フローチャート: "フローチャートは、システム内のデータの流れだけを表す図。",
+  データフローダイアグラム: "データフローダイアグラムは、プログラムの処理手順を図式で表すフローチャートのこと。",
+  決定表: "決定表では、条件が成り立つ場合をN、成り立たない場合をYで表す。",
+  プログラム言語: "プログラム言語は、コンピュータが自動生成したプログラムを人間が解読するためのもの。",
+  C言語: "C言語で書いたプログラムは、機械語に変換せずにCPUがそのまま直接実行する。",
+  Java: "Javaは、機械語そのものを10進数の数字列で記述するための言語。",
+  Javaアプレット: "Javaアプレットは、Javaというプログラム言語そのものを指す。",
+  機械語: "機械語は、人間が読み書きしやすい高水準言語の一つ。",
   成果物スコープ: "成果物スコープは、成果物を作るために必要な作業手順の範囲。",
   プロジェクトスコープ: "プロジェクトスコープは、プロジェクトで作成する成果物そのものの範囲。",
   WBS: "WBSは、作業の予定や進捗を横棒で表す図。",
@@ -139,6 +153,129 @@ const FALSE_QUIZ_BY_NAME = {
   問題管理: "問題管理は、ITサービスを一刻も早く復旧させ、ビジネスへの影響を小さくする活動。",
   構成管理: "構成管理は、ITサービスに関する変更要求に基づいて発生する一連の作業を管理する活動。",
   変更管理: "変更管理は、ITサービスを提供するために必要な構成品目の情報を管理する活動。",
+};
+
+const CALCULATION_QUIZ_BY_NAME = {
+  "2進数の足し算": [
+    {
+      question: "2進数の 1111 と 101 を足した答えは？",
+      answer: "10100",
+      solution: "右端から足し、1+1になった桁は0を書いて1を繰り上げる。1111 + 101 = 10100。",
+    },
+    {
+      question: "2進数の 1011 と 110 を足した答えは？",
+      answer: "10001",
+      solution: "1011は10進数で11、110は6なので、合計17を2進数にすると10001。",
+    },
+  ],
+  順列: [
+    {
+      question: "a〜fの6文字を並べ、aとbを両端に置く並べ方は何通り？",
+      answer: "48",
+      solution: "両端のaとbの入替えが2通り、中央4文字が4!通り。2 × 4! = 48通り。",
+    },
+    {
+      question: "異なる5個のものを一列に並べる方法は何通り？",
+      answer: "120",
+      solution: "5個すべての順列なので、5! = 5 × 4 × 3 × 2 × 1 = 120通り。",
+    },
+  ],
+  場合の数: [
+    {
+      question: "主菜3種類と副菜4種類から1種類ずつ選ぶ組合せは何通り？",
+      answer: "12",
+      solution: "主菜の選び方ごとに副菜が4通りあるので、3 × 4 = 12通り。",
+    },
+    {
+      question: "6人から委員長1人と副委員長1人を選ぶ方法は何通り？",
+      answer: "30",
+      solution: "役職が違うので順番を区別する。委員長6通り × 副委員長5通り = 30通り。",
+    },
+  ],
+  工数: [
+    {
+      question: "6人で3か月作業すると、工数は何人月？",
+      answer: "18",
+      solution: "工数 = 人数 × 期間。6人 × 3か月 = 18人月。",
+    },
+    {
+      question: "全体の50%に18人月かかった。同じ生産性なら残り50%は何人月？",
+      answer: "18",
+      solution: "同じ作業量を同じ生産性で進めるので、残りにも同じ18人月が必要。",
+    },
+  ],
+  生産性: [
+    {
+      question: "12kステップを毎月4kステップ作ると、完了まで何か月？",
+      answer: "3",
+      solution: "期間 = 作業量 ÷ 生産性。12 ÷ 4 = 3か月。",
+    },
+    {
+      question: "12kステップを、設計3k/月・開発4k/月・テスト6k/月の順で行う。合計何か月？",
+      answer: "9",
+      solution: "工程は順番に行う。設計4か月 + 開発3か月 + テスト2か月 = 9か月。",
+    },
+  ],
+  損益分岐点売上高: [
+    {
+      question: "売上400万円、変動費240万円、固定費120万円のとき、損益分岐点売上高は何万円？",
+      answer: "300",
+      solution: "変動費率 = 240 ÷ 400 = 0.6。120 ÷ (1 - 0.6) = 300万円。",
+    },
+    {
+      question: "固定費100万円、変動費率60%のとき、損益分岐点売上高は何万円？",
+      answer: "250",
+      solution: "限界利益率は1 - 0.6 = 0.4。100 ÷ 0.4 = 250万円。",
+    },
+  ],
+  ROE: [
+    {
+      question: "当期純利益200万円、自己資本1,000万円のとき、ROEは何%？",
+      answer: "20",
+      solution: "ROE = 当期純利益 ÷ 自己資本 × 100。200 ÷ 1,000 × 100 = 20%。",
+    },
+    {
+      question: "当期純利益90万円、自己資本600万円のとき、ROEは何%？",
+      answer: "15",
+      solution: "90 ÷ 600 × 100 = 15%。",
+    },
+  ],
+  定額法: [
+    {
+      question: "取得原価480,000円、耐用年数4年、残存価額0円。定額法の年間減価償却費は何円？",
+      answer: "120000",
+      solution: "(取得原価 - 残存価額) ÷ 耐用年数。480,000 ÷ 4 = 120,000円。",
+    },
+    {
+      question: "取得原価600,000円、耐用年数5年、残存価額0円。定額法の年間減価償却費は何円？",
+      answer: "120000",
+      solution: "600,000 ÷ 5 = 120,000円。",
+    },
+  ],
+  定率法: [
+    {
+      question: "取得原価480,000円、減価償却累計額300,000円、償却率0.625。当年の償却費は何円？",
+      answer: "112500",
+      solution: "未償却残高は480,000 - 300,000 = 180,000円。180,000 × 0.625 = 112,500円。",
+    },
+    {
+      question: "期首の未償却残高200,000円、償却率0.4。当年の償却費は何円？",
+      answer: "80000",
+      solution: "定率法は未償却残高 × 償却率。200,000 × 0.4 = 80,000円。",
+    },
+  ],
+  コミュニケーション経路: [
+    {
+      question: "メンバーが6人いるとき、1対1のコミュニケーション経路は何本？",
+      answer: "15",
+      solution: "n(n - 1) ÷ 2。6 × 5 ÷ 2 = 15本。",
+    },
+    {
+      question: "メンバーが10人いるとき、1対1のコミュニケーション経路は何本？",
+      answer: "45",
+      solution: "10 × 9 ÷ 2 = 45本。",
+    },
+  ],
 };
 
 const state = {
@@ -237,6 +374,8 @@ function mergeSeedData() {
       difficulty: generatedCard.difficulty,
       statement: generatedCard.statement,
       answer: generatedCard.answer,
+      type: generatedCard.type,
+      solution: generatedCard.solution,
     };
   });
 
@@ -245,7 +384,7 @@ function mergeSeedData() {
   }
 
   enrichCardExplanations();
-  return newTerms.length > 0 || newCards.length > 0;
+  return generatedCards.length > 0;
 }
 
 function escapeHtml(value) {
@@ -300,6 +439,7 @@ function referencedTermForStatement(statement, currentTermId) {
 }
 
 function explanationForCard(card) {
+  if (card.type === "calculation") return card.solution || card.explanation || "";
   const term = state.terms.find((item) => item.id === card.termId);
   if (!term) return card.explanation || "";
 
@@ -321,7 +461,6 @@ function enrichCardExplanations() {
 
 function buildSeedCards(terms) {
   return terms.flatMap((term) => {
-    const falseStatement = FALSE_QUIZ_BY_NAME[term.name] || buildFallbackFalseStatement(term, terms);
     const base = {
       termId: term.id,
       page: term.page,
@@ -332,6 +471,20 @@ function buildSeedCards(terms) {
       correct: 0,
       wrong: 0,
     };
+    const calculationQuizzes = CALCULATION_QUIZ_BY_NAME[term.name];
+    if (calculationQuizzes) {
+      return calculationQuizzes.map((quiz, index) => ({
+        ...base,
+        id: `card-${term.id}-${index === 0 ? "true" : "false"}`,
+        type: "calculation",
+        statement: quiz.question,
+        answer: quiz.answer,
+        solution: quiz.solution,
+        explanation: quiz.solution,
+      }));
+    }
+
+    const falseStatement = FALSE_QUIZ_BY_NAME[term.name] || buildFallbackFalseStatement(term, terms);
     return [
       {
         ...base,
@@ -449,6 +602,10 @@ function renderTextWithCopyTerms(text) {
 }
 
 function renderFeedbackMessage(correct, card) {
+  if (card.type === "calculation") {
+    const message = `${correct ? "正解" : "見直し"}。答えは「${card.answer}」。${card.solution}`;
+    return `${renderTextWithCopyTerms(message)}<span id="copyStatus" class="copy-status" aria-live="polite"></span>`;
+  }
   const message = `${correct ? "正解" : "見直し"}。正解は「${card.answer}」。${card.explanation}`;
   return `${renderTextWithCopyTerms(message)}<span id="copyStatus" class="copy-status" aria-live="polite"></span>`;
 }
@@ -494,6 +651,8 @@ function renderStudy() {
     $("#cardProgress").textContent = "0 / 0";
     $("#cardStatement").textContent = "このページにはカードがありません。追加タブからカードを増やしてください。";
     $("#feedback").hidden = true;
+    $("#choiceAnswerRow").hidden = false;
+    $("#calculationAnswerRow").hidden = true;
     return;
   }
 
@@ -501,8 +660,37 @@ function renderStudy() {
   $("#cardField").textContent = card.field || "未分類";
   $("#cardProgress").textContent = `${(state.currentIndex % state.currentCards.length) + 1} / ${state.currentCards.length}`;
   $("#cardStatement").textContent = card.statement;
+  const isCalculation = card.type === "calculation";
+  $("#choiceAnswerRow").hidden = isCalculation;
+  $("#calculationAnswerRow").hidden = !isCalculation;
+  $("#calculationInput").value = "";
+  $("#calculationInput").disabled = false;
+  $("#checkCalculationButton").disabled = false;
   $("#feedback").hidden = true;
   $("#feedback").className = "feedback";
+}
+
+function normalizeCalculationAnswer(value) {
+  return value
+    .toString()
+    .trim()
+    .replace(/[，,\s]/g, "")
+    .replace(/(万円|円|人月|通り|か月|ヶ月|本|%|％)$/i, "");
+}
+
+function answerCalculation() {
+  if (state.answered) return;
+  const card = currentCard();
+  if (!card || card.type !== "calculation") return;
+  const input = $("#calculationInput").value;
+  if (!input.trim()) {
+    $("#calculationInput").focus();
+    return;
+  }
+  const correct = normalizeCalculationAnswer(input) === normalizeCalculationAnswer(card.answer);
+  recordAnswer(input, correct, card);
+  $("#calculationInput").disabled = true;
+  $("#checkCalculationButton").disabled = true;
 }
 
 function answerCard(answer) {
@@ -510,6 +698,10 @@ function answerCard(answer) {
   const card = currentCard();
   if (!card) return;
   const correct = answer === card.answer;
+  recordAnswer(answer, correct, card);
+}
+
+function recordAnswer(answer, correct, card) {
   card[correct ? "correct" : "wrong"] += 1;
   if (!correct) {
     card.difficulty = Math.min(5, (card.difficulty || 3) + 1);
@@ -669,6 +861,10 @@ function bindEvents() {
   });
   $("#answerTrue").addEventListener("click", () => answerCard("○"));
   $("#answerFalse").addEventListener("click", () => answerCard("×"));
+  $("#calculationAnswerRow").addEventListener("submit", (event) => {
+    event.preventDefault();
+    answerCalculation();
+  });
   $("#feedback").addEventListener("click", async (event) => {
     const button = event.target.closest(".copy-term");
     if (!button) return;

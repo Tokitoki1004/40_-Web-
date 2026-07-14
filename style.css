@@ -235,6 +235,10 @@ button {
   gap: 14px;
 }
 
+.answer-row[hidden] {
+  display: none;
+}
+
 .answer-button {
   min-height: 76px;
   background: #eef5f8;
@@ -245,6 +249,47 @@ button {
 
 .answer-button:hover {
   background: #d8ebf2;
+}
+
+.calculation-answer-row {
+  display: grid;
+  gap: 10px;
+}
+
+.calculation-answer-row[hidden] {
+  display: none;
+}
+
+.calculation-answer-row label {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.calculation-answer-row > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+}
+
+.calculation-answer-row input {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 22px;
+}
+
+.calculation-answer-row input:focus {
+  border-color: var(--primary);
+  outline: 3px solid rgba(23, 107, 135, 0.16);
+}
+
+.calculation-answer-row .primary-button {
+  min-width: 128px;
 }
 
 .primary-button {
